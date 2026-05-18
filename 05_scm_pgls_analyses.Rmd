@@ -110,10 +110,15 @@ consolidated_data <- consolidated_data  %>%
   mutate (ebird_residuals_z = scale (ebird_residuals), peak_freq_z = scale (peak_freq), vert_strat_z = scale (vert_strat), mass_z = scale (mass))
 
 #Relative onset times ~ trophic niche (adjustment sets: Eye size, Foraging height, Vegetation structure)
+consolidated_data$trophic_niche <- relevel(factor(consolidated_data$trophic_niche), ref = "Frugivore")
+consolidated_data$foraging_habit <- relevel(factor(consolidated_data$foraging_habit), ref = "CAN")
+
+# throwing an error currently because your species in the tree are mismatched
+# once that is fixed, this code should run
 model1 <- consolidated_data %>%
-  gls(relative_onset_times ~ relevel(factor(trophic_niche), ref = "Frugivore") +  
+  gls(relative_onset_times ~ trophic_niche +  
                                    ebird_residuals +  
-                                   relevel(factor(foraging_habit), ref = "CAN") +
+                                   foraging_habit +
                                    vert_strat,
     data = .,
     correlation = corBrownian(1, tree, form = ~scientific_name))
