@@ -1,85 +1,80 @@
-"","scientific_name","mean_eye_size","common_name","mass","rel_mean_eye_size"
-"1","Accipiter badius",9.79636363636364,"Shikra",131.2,0.0746674057649667
-"2","Accipiter trivirgatus",14.7425,"Crested Goshawk",265,0.0556320754716981
-"3","Aegithina tiphia",3.887,"Common Iora",12,0.323916666666667
-"4","Arachnothera longirostra",5.108,"Little Spiderhunter",12.5,0.40864
-"5","Carpodacus erythrinus",3.756,"Common Rosefinch",24,0.1565
-"6","Centropus sinensis",9.759,"Greater Coucal",280.7,0.0347666547915925
-"7","Chalcophaps indica",6.947,"Asian Emerald Dove",136.5,0.0508937728937729
-"8","Chloropsis aurifrons",4.82272727272727,"Golden-fronted Leafbird",32.3,0.149310441880101
-"9","Copsychus saularis",6.67,"Oriental Magpie-Robin",36,0.185277777777778
-"10","Corvus macrorhynchos",10.713,"Large-billed Crow",513.1,0.0208789709608263
-"11","Corvus splendens",8.42727272727273,"House Crow",292.6,0.0288013421984714
-"12","Culicicapa ceylonensis",4.182,"Gray-headed Canary-Flycatcher",7.7,0.543116883116883
-"13","Cyornis rubeculoides",4.81,"Blue-throated Flycatcher",14.2,0.338732394366197
-"14","Dendronanthus indicus",4.463,"Forest Wagtail",16.4,0.272134146341463
-"15","Dicaeum concolor",2.82583333333333,"Nilgiri Flowerpecker",6.2,0.455779569892473
-"16","Dicrurus aeneus",5.8,"Bronzed Drongo",26,0.223076923076923
-"17","Dicrurus leucophaeus",6.213,"Ashy Drongo",37.6,0.165239361702128
-"18","Dicrurus paradiseus",6.992,"Greater Racket-tailed Drongo",85.8,0.0814918414918415
-"19","Dinopium benghalense",5.848,"Black-rumped Flameback",100,0.05848
-"20","Dryocopus javensis",8.452,"White-bellied Woodpecker",271.4,0.0311422254974208
-"21","Ducula badia",8.76454545454545,"Mountain Imperial-Pigeon",486,0.0180340441451553
-"22","Eudynamys scolopaceus",8.23,"Asian Koel",194.9,0.0422267829656234
-"23","Halcyon smyrnensis",7.935,"White-throated Kingfisher",91.4,0.0868161925601751
-"24","Haliastur indus",12.3190909090909,"Brahminy Kite",529,0.0232875064444063
-"25","Hemicircus canente",4.416,"Heart-spotted Woodpecker",43,0.102697674418605
-"26","Hemipus picatus",4.019,"Bar-winged Flycatcher-shrike",9,0.446555555555556
-"27","Hypothymis azurea",4.359,"Black-naped Monarch",11.1,0.392702702702703
-"28","Irena puella",6.29727272727273,"Asian Fairy-bluebird",64.9,0.0970303964140636
-"29","Lanius cristatus",6.241,"Brown Shrike",32.2,0.193819875776397
-"30","Merops leschenaulti",5.819,"Chestnut-headed Bee-eater",27.2,0.213933823529412
-"31","Milvus migrans",12.68,"Black Kite",734.1,0.017272851110203
-"32","Motacilla cinerea",4.05,"Gray Wagtail",17.2,0.23546511627907
-"33","Muscicapa dauurica",5.025,"Asian Brown Flycatcher",9.8,0.512755102040816
-"34","Oriolus xanthornus",5.82636363636364,"Black-hooded Oriole",56.3,0.103487808816406
-"35","Orthotomus sutorius",3.407,"Common Tailorbird",7.5,0.454266666666667
-"36","Pavo cristatus",11.565,"Indian Peafowl",4154.8,0.00278352748628093
-"37","Pellorneum ruficeps",5.19666666666667,"Puff-throated Babbler",26,0.199871794871795
-"38","Pericrocotus flammeus",5.378,"Orange Minivet",23.3,0.230815450643777
-"39","Phylloscopus trochiloides",3.395,"Greenish Warbler",8.1,0.419135802469136
-"40","Picumnus innominatus",3.679,"Speckled Piculet",10.2,0.360686274509804
-"41","Picus chlorolophus",5.841,"Lesser Yellownape",65.4,0.0893119266055046
-"42","Pitta brachyura",7.019,"Indian Pitta",55.5,0.126468468468468
-"43","Pycnonotus jocosus",4.711,"Red-whiskered Bulbul",29.5,0.159694915254237
-"44","Spilornis cheela",37.973,"Crested Serpent-Eagle",597.7,0.0635318721766773
-"45","Upupa epops",4.995,"Eurasian Hoopoe",66.9,0.0746636771300448
-"46","Zosterops palpebrosus",3.07,"Indian White-eye",8.6,0.356976744186047
-"47","Acritillas indica",5.4764956243,"Yellow-browed Bulbul",30.6,0.178970445238562
-"48","Acrocephalus dumetorum",3.7858899219,"Blyth's Reed Warbler",11.2,0.338025885883929
-"49","Alcippe poioicephala",4.3607488465,"Brown-cheeked Fulvetta",20.7,0.210664195483092
-"50","Argya subrufa",4.8090781851,"Rufous Babbler",66.7,0.0721001227151424
-"51","Chrysocolaptes guttacristatus",6.4921609244,"Greater Flameback",166,0.0391094031590361
-"52","Cinnyris asiaticus",3.3030259567,"Purple Sunbird",8.1,0.407780982308642
-"53","Cyornis pallidipes",5.0395369028,"White-bellied Blue Flycatcher",19,0.265238784357895
-"54","Dendrocitta leucogastra",8.0390426471,"White-bellied Treepie",99.2,0.0810387363618952
-"55","Dinopium javanense",4.3723918741,"Common Flameback",72.8,0.0600603279409341
-"56","Dumetia atriceps",4.0118512186,"Dark-fronted Babbler",16.3,0.246125841631902
-"57","Eumyias albicaudatus",4.55793996,"Nilgiri Flycatcher",16.4,0.277923168292683
-"58","Ficedula nigrorufa",4.4496810601,"Black-and-orange Flycatcher",9.4,0.473370325542553
-"59","Ficedula ruficauda",3.812357186,"Rusty-tailed Flycatcher",13.3,0.286643397443609
-"60","Galloperdix spadicea",7.2904783485,"Red Spurfowl",359.1,0.0203020839557226
-"61","Gallus sonneratii",8.0653371427,"Gray Junglefowl",840.8,0.00959245616401047
-"62","Geokichla citrina",6.2181027886,"Orange-headed Thrush",53.3,0.116662341249531
-"63","Gracula indica",6.9110190501,"Southern Hill Myna",192,0.0359948908859375
-"64","Harpactes fasciatus",6.7369353528,"Malabar Trogon",62,0.108660247625806
-"65","Hierococcyx varius",7.2727169884,"Common Hawk-Cuckoo",103,0.0706089028
-"66","Hypsipetes ganeesa",5.2714275729,"Square-tailed Bulbul",51.8,0.101765011059846
-"67","Larvivora brunnea",3.8360014416,"Indian Blue Robin",17.5,0.219200082377143
-"68","Leptocoma minima",2.5051569488,"Crimson-backed Sunbird",4.9,0.511256520163265
-"69","Machlolophus aplonotus",3.6842844378,"Indian Yellow Tit",14.8,0.248938137689189
-"70","Micropternus brachyurus",5.8384613319,"Rufous Woodpecker",85.9,0.0679681179499418
-"71","Muscicapa muttui",4.714591388,"Brown-breasted Flycatcher",12,0.392882615666667
-"72","Myophonus horsfieldii",7.9363435741,"Malabar Whistling-Thrush",117,0.0678319963598291
-"73","Pericrocotus cinnamomeus",3.6145845817,"Small Minivet",8.6,0.420300532755814
-"74","Phylloscopus magnirostris",3.2780771519,"Large-billed Leaf Warbler",11.6,0.282592857922414
-"75","Phylloscopus nitidus",2.9127111107,"Green Warbler",7.8,0.373424501371795
-"76","Picus xanthopygaeus",5.6591177615,"Streak-throated Woodpecker",99.7,0.056761462001003
-"77","Pomatorhinus horsfieldii",4.6193224752,"Indian Scimitar-Babbler",43,0.107426104074419
-"78","Psilopogon malabaricus",4.0174135706,"Malabar Barbet",37.6,0.106846105601064
-"79","Psilopogon viridis",6.544475824,"White-cheeked Barbet",80.5,0.0812978363229814
-"80","Rubigula gularis",3.6509080503,"Flame-throated Bulbul",29.3,0.124604370317406
-"81","Sitta frontalis",3.49217362,"Velvet-fronted Nuthatch",16.5,0.211646886060606
-"82","Tephrodornis sylvicola",5.6730295763,"Malabar Woodshrike",37.8,0.150080147521164
-"83","Terpsiphone paradisi",4.9539744324,"Indian Paradise-Flycatcher",19.2,0.2580195016875
-"84","Treron affinis",5.9078784818,"Gray-fronted Green-Pigeon",234,0.0252473439393162
+"","scientific_name","mean_eye_size","common_name","mass"
+"1","Aegithina tiphia",3.887,"Common Iora",12
+"2","Arachnothera longirostra",5.108,"Little Spiderhunter",12.5
+"3","Carpodacus erythrinus",3.756,"Common Rosefinch",24
+"4","Centropus sinensis",9.759,"Greater Coucal",280.7
+"5","Chalcophaps indica",6.947,"Asian Emerald Dove",136.5
+"6","Chloropsis aurifrons",4.82272727272727,"Golden-fronted Leafbird",32.3
+"7","Copsychus saularis",6.67,"Oriental Magpie-Robin",36
+"8","Corvus macrorhynchos",10.713,"Large-billed Crow",513.1
+"9","Corvus splendens",8.42727272727273,"House Crow",292.6
+"10","Culicicapa ceylonensis",4.182,"Gray-headed Canary-Flycatcher",7.7
+"11","Cyornis rubeculoides",4.81,"Blue-throated Flycatcher",14.2
+"12","Dendronanthus indicus",4.463,"Forest Wagtail",16.4
+"13","Dicaeum concolor",2.82583333333333,"Nilgiri Flowerpecker",6.2
+"14","Dicrurus aeneus",5.8,"Bronzed Drongo",26
+"15","Dicrurus leucophaeus",6.213,"Ashy Drongo",37.6
+"16","Dicrurus paradiseus",6.992,"Greater Racket-tailed Drongo",85.8
+"17","Dinopium benghalense",5.848,"Black-rumped Flameback",100
+"18","Dryocopus javensis",8.452,"White-bellied Woodpecker",271.4
+"19","Ducula badia",8.76454545454545,"Mountain Imperial-Pigeon",486
+"20","Eudynamys scolopaceus",8.23,"Asian Koel",194.9
+"21","Halcyon smyrnensis",7.935,"White-throated Kingfisher",91.4
+"22","Hemicircus canente",4.416,"Heart-spotted Woodpecker",43
+"23","Hemipus picatus",4.019,"Bar-winged Flycatcher-shrike",9
+"24","Hypothymis azurea",4.359,"Black-naped Monarch",11.1
+"25","Irena puella",6.29727272727273,"Asian Fairy-bluebird",64.9
+"26","Lanius cristatus",6.241,"Brown Shrike",32.2
+"27","Merops leschenaulti",5.819,"Chestnut-headed Bee-eater",27.2
+"28","Motacilla cinerea",4.05,"Gray Wagtail",17.2
+"29","Muscicapa dauurica",5.025,"Asian Brown Flycatcher",9.8
+"30","Oriolus xanthornus",5.82636363636364,"Black-hooded Oriole",56.3
+"31","Orthotomus sutorius",3.407,"Common Tailorbird",7.5
+"32","Pavo cristatus",11.565,"Indian Peafowl",4154.8
+"33","Pellorneum ruficeps",5.19666666666667,"Puff-throated Babbler",26
+"34","Pericrocotus flammeus",5.378,"Orange Minivet",23.3
+"35","Phylloscopus trochiloides",3.395,"Greenish Warbler",8.1
+"36","Picumnus innominatus",3.679,"Speckled Piculet",10.2
+"37","Picus chlorolophus",5.841,"Lesser Yellownape",65.4
+"38","Pitta brachyura",7.019,"Indian Pitta",55.5
+"39","Pycnonotus jocosus",4.711,"Red-whiskered Bulbul",29.5
+"40","Upupa epops",4.995,"Eurasian Hoopoe",66.9
+"41","Zosterops palpebrosus",3.07,"Indian White-eye",8.6
+"42","Acritillas indica",5.4764956243,"Yellow-browed Bulbul",30.6
+"43","Acrocephalus dumetorum",3.7858899219,"Blyth's Reed Warbler",11.2
+"44","Alcippe poioicephala",4.3607488465,"Brown-cheeked Fulvetta",20.7
+"45","Argya subrufa",4.8090781851,"Rufous Babbler",66.7
+"46","Chrysocolaptes guttacristatus",6.4921609244,"Greater Flameback",166
+"47","Cinnyris asiaticus",3.3030259567,"Purple Sunbird",8.1
+"48","Cyornis pallidipes",5.0395369028,"White-bellied Blue Flycatcher",19
+"49","Dendrocitta leucogastra",8.0390426471,"White-bellied Treepie",99.2
+"50","Dinopium javanense",4.3723918741,"Common Flameback",72.8
+"51","Dumetia atriceps",4.0118512186,"Dark-fronted Babbler",16.3
+"52","Eumyias albicaudatus",4.55793996,"Nilgiri Flycatcher",16.4
+"53","Ficedula nigrorufa",4.4496810601,"Black-and-orange Flycatcher",9.4
+"54","Ficedula ruficauda",3.812357186,"Rusty-tailed Flycatcher",13.3
+"55","Galloperdix spadicea",7.2904783485,"Red Spurfowl",359.1
+"56","Gallus sonneratii",8.0653371427,"Gray Junglefowl",840.8
+"57","Geokichla citrina",6.2181027886,"Orange-headed Thrush",53.3
+"58","Gracula indica",6.9110190501,"Southern Hill Myna",192
+"59","Harpactes fasciatus",6.7369353528,"Malabar Trogon",62
+"60","Hierococcyx varius",7.2727169884,"Common Hawk-Cuckoo",103
+"61","Hypsipetes ganeesa",5.2714275729,"Square-tailed Bulbul",51.8
+"62","Larvivora brunnea",3.8360014416,"Indian Blue Robin",17.5
+"63","Leptocoma minima",2.5051569488,"Crimson-backed Sunbird",4.9
+"64","Machlolophus aplonotus",3.6842844378,"Indian Yellow Tit",14.8
+"65","Micropternus brachyurus",5.8384613319,"Rufous Woodpecker",85.9
+"66","Muscicapa muttui",4.714591388,"Brown-breasted Flycatcher",12
+"67","Myophonus horsfieldii",7.9363435741,"Malabar Whistling-Thrush",117
+"68","Pericrocotus cinnamomeus",3.6145845817,"Small Minivet",8.6
+"69","Phylloscopus magnirostris",3.2780771519,"Large-billed Leaf Warbler",11.6
+"70","Phylloscopus nitidus",2.9127111107,"Green Warbler",7.8
+"71","Picus xanthopygaeus",5.6591177615,"Streak-throated Woodpecker",99.7
+"72","Pomatorhinus horsfieldii",4.6193224752,"Indian Scimitar-Babbler",43
+"73","Psilopogon malabaricus",4.0174135706,"Malabar Barbet",37.6
+"74","Psilopogon viridis",6.544475824,"White-cheeked Barbet",80.5
+"75","Rubigula gularis",3.6509080503,"Flame-throated Bulbul",29.3
+"76","Sitta frontalis",3.49217362,"Velvet-fronted Nuthatch",16.5
+"77","Tephrodornis sylvicola",5.6730295763,"Malabar Woodshrike",37.8
+"78","Terpsiphone paradisi",4.9539744324,"Indian Paradise-Flycatcher",19.2
+"79","Treron affinis",5.9078784818,"Gray-fronted Green-Pigeon",234

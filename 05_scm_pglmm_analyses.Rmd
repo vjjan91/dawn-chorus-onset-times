@@ -1,0 +1,371 @@
+---
+title: "04_scm_pgls_analyses"
+output: html_document
+---
+
+# SCM_PGLMM_analysis
+
+In this script, we will examine which of the causal variables (peak frequency, vegetation structure, trophic niche, foraging height, eye size, territoriality) best explain the differences in onset times using the structural causal model framework and the analysis method of phylogenetic generalized linear mixed models. We use the phylogenetic tree from McTavish et al. 2025. 
+
+## Install required libraries
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(vegan)
+library(ggplot2)
+library(scico)
+library(data.table)
+library(extrafont)
+library(sf)
+library(raster)
+library(lubridate)
+library(suncalc)
+library(lutz)
+library(stringr)
+library(ggtext)
+library(ggpubr)
+library(hms)
+library(clootl)
+library(ape)
+library(nlme)
+library(geiger)
+library(phytools)
+library(phangorn)
+library(phyr)
+library(psych)
+```
+
+## Reading the required data
+
+```{r}
+consolidated_data <- read.csv ('results/consolidated_data.csv')
+```
+
+## Cleaning the data
+
+```{r}
+consolidated_data <- consolidated_data %>%
+  filter(trophic_niche != "Aquatic predator") %>%
+  filter(trophic_niche != "Granivore") %>%
+  filter(trophic_niche != "Nectarivore") %>%
+  filter(trophic_niche != "Vertivore") %>%
+  filter (foraging_habit != "AER") %>%
+  filter (foraging_habit != "AQU") #removing trophic niches and foraging habit categories that are poorly represented (Aquatic predator- 1 sp; Granivore- 1 sp; Nectarivore- 2 sp; Vertivore- 3 sp; AQU- 1 sp; AER- 1 sp)
+  
+#This leaves us with 67 species for downstream analyses.
+```
+
+## Extracting the list of species (scientific names) for phylogeny
+
+```{r}
+species <- consolidated_data %>%
+  distinct (scientific_name) %>%
+  #unique (consolidated_data$scientific_name)
+  mutate(scientific_name = recode(scientific_name, "Accipiter badius" = "Tachyspiza badia"), 
+        scientific_name = recode (scientific_name, "Iole indica" = "Acritillas indica"))
+
+species <- as.character (species$scientific_name) #converting it into character vector
+```
+
+## Extracting a phylogenetic tree and obtaining a phylogenetic variance-covariance matrix of the 67 species
+
+```{r}
+tree <- extractTree (species = species, label_type= "scientific", taxonomy_year= "2025")
+plot (tree)
+
+phylo_vcv <- vcv(tree)
+```
+
+## Changing the names of two species to match the phylogenetic tree
+
+```{r}
+consolidated_data <- consolidated_data %>%
+  mutate(scientific_name = recode(scientific_name, "Accipiter badius" = "Tachyspiza badia"),   scientific_name = recode (scientific_name, "Iole indica" = "Acritillas indica")) %>%
+  mutate(across(scientific_name, str_replace, " ", "_"))
+
+scientific_names <- unique (consolidated_data$scientific_name) #extracting only the unique scientific names (to check for match with the phylogenetic tree)
+```
+
+## Checking species in the tree and the data
+
+```{r}
+setdiff (scientific_names, tree$tip.label) #to check if all species in the data are on the tree: result 'character (0)'
+
+setdiff (tree$tip.label, scientific_names) #to check if all species on the tree are in the data: result 'character (0)'
+```
+
+## Testing for correlations among the variables
+
+```{r}
+for_corr <- consolidated_data %>%
+  dplyr::select (scientific_name, relative_onset_times, ebird_residuals, mass, trophic_niche, foraging_habit, peak_freq, territoriality, vert_strat) %>%
+  mutate (relative_onset_time_z = scale (relative_onset_times), pf_z = scale (peak_freq), vert_strat_z = scale (vert_strat)) %>% #scaling the numerical variables
+  dplyr::select (scientific_name, relative_onset_time_z, ebird_residuals, mass, trophic_niche, foraging_habit, pf_z, territoriality, vert_strat_z) #only keeping the scaled variables
+
+pairs.panels(for_corr[, c(2:9)]) #none of the variables are significantly correlated with each other, so we retain all of them
+```
+
+## PGLMM Analyses
+
+```{r}
+# renaming site and sp columns
+consolidated_data <- consolidated_data %>% 
+  rename(., sp = scientific_name) %>%
+  rename(., site = site_id)
+
+# checking the distribution of onset times to help decide the family for pglmm
+hist (consolidated_data$relative_onset_times)
+abline (v = mean(consolidated_data$relative_onset_times))
+
+#Relative onset times ~ trophic niche (adjustment sets: Vegetation structure)
+model1 <- pglmm(relative_onset_times ~ relevel (factor(trophic_niche), ref = 'Frugivore') +
+                 scale (vert_strat) + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, 
+                family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE)
+summary (model1)
+
+residuals_model1 <- residuals(model1)
+fitted_values1 <- fitted(model1)
+
+#model diagnostics
+diag1a <- data.frame(Fitted = fitted_values1, Residuals = residuals_model1) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5, shape = 20) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 14, face = "bold"),
+    axis.text.y = element_markdown(family = 'Century Gothic', size = 10),
+    axis.text.x = element_text(family = 'Century Gothic', size = 10), 
+    text = element_text(family = 'Century Gothic'), 
+    axis.title = element_text(family = 'Century Gothic', size = 12))
+
+diag1b <- data.frame(Residuals = residuals_model1) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6, shape = 20) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 14, face = "bold"),
+    axis.text.y = element_markdown(family = 'Century Gothic', size = 10),
+    axis.text.x = element_text(family = 'Century Gothic', size = 10), 
+    text = element_text(family = 'Century Gothic'), 
+    axis.title = element_text(family = 'Century Gothic', size = 12))
+        
+plot_grid (diag1a, diag1b)
+
+rr2::R2(model1) #R2 to evaluate how well the model fits the data
+
+#Relative onset times ~ territoriality (adjustment sets: none)
+model2 <- pglmm(relative_onset_times ~ relevel(factor(territoriality), ref = "Non-territorial") + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE)
+
+summary(model2)
+confint (model2)
+
+residuals_model2 <- residuals(model2)
+fitted_values2 <- fitted(model2)
+
+#model diagnostics
+diag2a <- data.frame(Fitted = fitted_values2, Residuals = residuals_model2) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 14, face = "bold"),
+    axis.text.y = element_markdown(family = 'Century Gothic', size = 10),
+    axis.text.x = element_text(family = 'Century Gothic', size = 10), 
+    text = element_text(family = 'Century Gothic'), 
+    axis.title = element_text(family = 'Century Gothic', size = 12))
+
+diag2b <- data.frame(Residuals = residuals_model2) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 14, face = "bold"),
+    axis.text.y = element_markdown(family = 'Century Gothic', size = 10),
+    axis.text.x = element_text(family = 'Century Gothic', size = 10), 
+    text = element_text(family = 'Century Gothic'), 
+    axis.title = element_text(family = 'Century Gothic', size = 12))
+
+plot_grid (diag2a, diag2b)
+
+#Relative onset times ~ foraging height (adjustment sets: Trophic niche, Vegetation structure)
+model3 <- pglmm(relative_onset_times ~ relevel(factor(foraging_habit), ref = "GRD") +
+                relevel (factor(trophic_niche), ref = 'Frugivore') +
+                 scale (vert_strat) + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE)
+
+summary(model3)
+confint (model3)
+
+residuals_model3 <- residuals(model3)
+fitted_values3 <- fitted(model3)
+
+#model diagnostics
+diag3a <- data.frame(Fitted = fitted_values3, Residuals = residuals_model3) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+diag3b <- data.frame(Residuals = residuals_model3) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+plot_grid (diag3a, diag3b)
+
+
+#Relative onset times ~ eye size (adjustment sets: Foraging Height, Vegetation Structure)
+model4 <- pglmm(relative_onset_times ~ ebird_residuals + 
+                relevel(factor(foraging_habit), ref = "GRD") +
+                scale (vert_strat) + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE) 
+
+summary(model4)
+confint (model4)
+
+residuals_model4 <- residuals(model4)
+fitted_values4 <- fitted(model4)
+
+#model diagnostics
+diag4a <- data.frame(Fitted = fitted_values4, Residuals = residuals_model4) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+diag4b <- data.frame(Residuals = residuals_model4) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+plot_grid (diag4a, diag4b)
+
+#Relative onset times ~ vegetation structure (adjustment sets: none)
+model5 <- pglmm(relative_onset_times ~ scale (vert_strat) + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE) 
+
+summary(model5)
+confint (model5)
+
+residuals_model5 <- residuals(model5)
+fitted_values5 <- fitted(model5)
+
+#model diagnostics
+diag5a <- data.frame(Fitted = fitted_values5, Residuals = residuals_model5) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+diag5b <- data.frame(Residuals = residuals_model5) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+plot_grid (diag5a, diag5b)
+
+#Relative onset times ~ peak frequency (adjustment sets: Vegetation Structure)
+model6 <- pglmm(relative_onset_times ~ scale (peak_freq) + 
+                  scale (vert_strat) + 
+                 (1 | sp__) + (1|site), 
+                data = consolidated_data, family = "gaussian", cov_ranef = list(sp = phylo_vcv), REML = TRUE,  verbose = FALSE)
+
+summary(model6)
+confint (model6)
+
+residuals_model6 <- residuals(model6)
+fitted_values6 <- fitted(model6)
+
+#model diagnostics
+diag6a <- data.frame(Fitted = fitted_values6, Residuals = residuals_model6) %>%
+  ggplot(aes(x = Fitted, y = Residuals)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(x = "Fitted values", y = "Residuals", 
+       title = "A) Residuals vs Fitted") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+diag6b <- data.frame(Residuals = residuals_model6) %>%
+  ggplot(aes(sample = Residuals)) +
+  stat_qq(size = 1.5, alpha = 0.6) +
+  stat_qq_line(color = "red", linewidth = 1.2) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles",
+       title = "B) Q-Q Plot of Residuals") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 12, face = "bold"))
+
+plot_grid (diag6a, diag6b)
+
+ggplot(consolidated_data, aes(x= peak_freq, y= relative_onset_times)) +
+  geom_point(shape = 20, size = 5) +
+  geom_abline(intercept = coef(model6)[1],
+              slope = coef(model4)[2]) +
+ labs(y = 'Relative onset times (minutes)', x = 'Peak Frequency (Hz)') +
+  theme_bw() +
+  theme(axis.text.y = element_markdown(family = 'Century Gothic', size = 12),
+    axis.text.x = element_text(family = 'Century Gothic', size = 12), 
+    text = element_text(family = 'Century Gothic'), 
+    axis.title = element_text(family = 'Century Gothic', size = 18, face = 'bold'))
+
+ggplot(consolidated_data, aes(x = peak_freq, y = relative_onset_times)) +
+    geom_point(alpha = 0.6, color = "steelblue", size = 1.5) +
+    geom_smooth(method = "lm", color = "red", fill = "red", alpha = 0.2, linewidth = 1.2) +
+    labs(
+      x = "Peak frequency (Hz)",
+      y = "Relative Onset times (mins)") +
+  annotate("text", x = 4500,
+     y = 215,
+     label = paste ("estimate = 5.495; std error = 1.337; p = 3.992e-05"),
+    color = "black",
+     family = "Century Gothic", size = 5)
+```
+
+
+
+
+

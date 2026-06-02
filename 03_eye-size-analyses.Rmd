@@ -33,17 +33,9 @@ eye_size_ebird_AR <- read.csv ('data/eye-size-ebird-A&R.csv') #file with Macaula
 eye_size_ebird_not_in_AR <- read.csv ('data/eye-size-ebird-not-in-A&R.csv') #file with Macaulay photo-derived eye size estimates, for species for which we don't have comparable measurements from museum specimens
 ```
 
-## Firstly, obtaining a list of species that are present and absent in the eye size dataset. Secondly, obtaining a list of i) species for which we are analyzing onset times and have eye size data (museum), and ii) species for which we are analyzing onset times and do not have eye size data (museum)
+## Obtaining a list of species that are present and absent in the eye size dataset- only for reference
 
 ```{r}
-#1
-species_there <- data.frame (scientific_name = intersect (species_traits$scientific_name, eye_size_museum$species_jetz))
-sp_list_on_A_S <- inner_join (species_traits, species_there, by = 'scientific_name') 
-
-species_not_there <- data.frame (scientific_name = setdiff (species_traits$scientific_name, eye_size_museum$species_jetz))
-sp_list_not_on_A_S <- inner_join (species_traits, species_not_there, by = 'scientific_name') 
-
-#2
 species <- data.frame (scientific_name = unique (species_traits$scientific_name))
 
 species_there <- data.frame (scientific_name = intersect (species$scientific_name, eye_size_museum$species_jetz))
@@ -63,8 +55,8 @@ eye_size_ebird_AR <- eye_size_ebird_AR %>%
   slice_min (order_by = abs(Error_of_bill_ratio), n = 10) %>% #only selecting those estimates which have the least error ratios of all estimates
   summarize (mean_eye_size = mean(Eye_Size_in_mm_averaged)) %>% #obtaining the mean eye size measurements for our species
   left_join (., species_traits, by = 'scientific_name') %>%
-  dplyr::select (scientific_name, mean_eye_size, common_name, mass) %>% 
-  mutate (rel_mean_eye_size = mean_eye_size/mass) %>% #calculating mean eye sizes relative to body mass for each species
+  dplyr::select (scientific_name, mean_eye_size, common_name, mass)  %>%
+  filter (!common_name %in% c('Shikra', 'Crested Goshawk','Black Kite', 'Brahminy Kite', 'Crested Serpent-Eagle')) %>% #removing raptors from the analyses
   ungroup ()
 ```
 
@@ -78,8 +70,7 @@ eye_size_museum <- eye_size_museum %>%
   group_by (scientific_name) %>%
   summarize (mean_AD = mean (AD)) %>% #obtaining the mean axial diameter measurements for our species
  left_join (., species_traits, by = 'scientific_name') %>%
-  dplyr::select (scientific_name, mean_AD, common_name, mass) %>% 
-  mutate (rel_mean_AD = mean_AD/mass) %>% #calculating mean eye sizes relative to body mass for each species
+  dplyr::select (scientific_name, mean_AD, common_name, mass) %>%
   ungroup ()
 ```
 
@@ -92,7 +83,7 @@ summary (lm_ebird) #to get the results
 
 predicted <- fitted (lm_ebird) #gives the predicted values 
 residuals <- residuals (lm_ebird) #gives the residuals, i.e. the difference between the predicted and the actual value
-lm_ebird_residuals <- as.data.frame (predicted) #creating a dataframe with the predicted
+lm_ebird_residuals <- as.data.frame (predicted) #creating a dataframe with the predicted values
 lm_ebird_residuals$ebird_residuals <- residuals #and the residual values
 
 #museum-measurements:
@@ -106,9 +97,6 @@ lm_museum_residuals$museum_residuals <- residuals
 
 lm_results <- bind_cols (lm_museum_residuals, lm_ebird_residuals, eye_size_ebird_AR) %>%
   dplyr::select (museum_residuals, ebird_residuals, scientific_name, common_name) #combining the residual values of the eye size estimates from macaulay and measurements from museum and adding the column of species to it
-
-lm_results <- left_join (species_there, lm_results, by ='scientific_name') %>% #only filtering those species for which we are analyzing onset times
-  na.omit ()
 ```
 
 ## Conducting a correlation between the residual values from the linear regressions between estimates or measurements and body mass
@@ -116,9 +104,10 @@ lm_results <- left_join (species_there, lm_results, by ='scientific_name') %>% #
 ```{r}
 cor_plot <- ggscatter(lm_results, x = 'museum_residuals', y = 'ebird_residuals', 
           add = "reg.line", conf.int = TRUE, color = 'black',
-          xlab = "Relative eye size estimates using Ausprey & Stanley 2024", ylab = "Relative eye size estimates using Macaulay Library", col = 'black', shape = 20, size = 10, label = 'common_name' , font.label = c(20, 'black'), 
+          xlab = "Relative eye size measurements using Ausprey & Stanley 2024", ylab = "Relative eye size estimates using Macaulay Library", col = 'black', shape = 20, size = 10, label = 'common_name' , font.label = c(20, 'black'), 
           font.family = "Century Gothic", repel = TRUE) +
   stat_cor (method = 'spearman', label.x.npc = "left", label.y.npc = "top", color ='black', size = 15, family = "Century Gothic") +
+  theme_bw () +
   theme(text = element_text (family = "Century Gothic"),
   axis.text =  element_text (size = 25, family = "Century Gothic", colour = "black"),
   axis.title = element_text (size =25, family = "Century Gothic", colour = "black"))
@@ -136,7 +125,7 @@ ggsave(cor_plot,
 dev.off()
 ```
 
-#This plot shows a highly significant positive correlation (R = 0.79, p < 0.05) between the residuals of eye size estimates from citizen-science-derived photographs and measurements from museum specimens. Thus, we extend the methodology of estimating eye size estimates from photographs to species for which we do not have comparable museum-based data.
+#This plot shows a highly significant positive correlation (R = 0.74, p < 0.05) between the residuals of eye size estimates from citizen-science-derived photographs and measurements from museum specimens for 41 species (after removing raptors, i.e. Shikra, Crested Goshawk, Crested Serpent-Eagle, Black Kite, and Brahminy Kite). Thus, we extend the methodology of estimating eye size estimates from photographs to 38 species for which we do not have comparable museum-based data.
 
 #Section II
 ## Cleaning the eye size data (data for species with no comparable data)
@@ -156,11 +145,10 @@ eye_size_ebird_not_in_AR <- eye_size_ebird_not_in_AR %>%
   summarize (mean_eye_size = mean(Eye_Size_in_mm_averaged)) %>% 
   left_join (., species_traits, by = 'scientific_name') %>%
   dplyr::select (scientific_name, mean_eye_size, common_name, mass) %>% 
-  mutate (rel_mean_eye_size = mean_eye_size/mass) %>% 
   ungroup ()
 ```
 
-## Combining both the eye size dataframes
+## Combining both the eye size dataframes to have a single dataframe with all eye size estimates (for 79 species)
 
 ```{r}
 eye_size_ebird <- bind_rows (eye_size_ebird_AR, eye_size_ebird_not_in_AR)
@@ -168,7 +156,7 @@ eye_size_ebird <- bind_rows (eye_size_ebird_AR, eye_size_ebird_not_in_AR)
 write.csv (eye_size_ebird, 'results/eye_size_ebird.csv')
 ```
 
-## Then, we obtain the residual eye size estimates of all species, i.e 84 species
+## Then, we obtain the residual eye size estimates of all species, i.e 79 species
 
 ```{r}
 lm <- lm (log (mean_eye_size) ~ log (mass), data = eye_size_ebird) 
